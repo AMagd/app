@@ -9,7 +9,7 @@ def cumulative_sum(points, mean):
         if i==0:
             cumsum.append(mean - points[i])
         else:
-            cumsum.append(mean + (points[i-1] + points[i]))
+            cumsum.append(mean + (points[i-1] - points[i]))
     return cumsum
 
 # Streamlit app
