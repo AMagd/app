@@ -1,12 +1,15 @@
 import streamlit as st
 import numpy as np
-import matplotlib.pyplot as plt
+import plotly.graph_objects as go
 
 # Function to compute cumulative sum
 def cumulative_sum(points, mean):
     cumsum = [mean]
     for i in range(1, len(points)):
-        cumsum.append(cumsum[-1] + (points[i] - points[i-1]))
+        if i==0:
+            cumsum.append(mean - points[i])
+        else:
+            cumsum.append(mean + (points[i-1] + points[i]))
     return cumsum
 
 # Streamlit app
@@ -29,23 +32,38 @@ def main():
             # Calculate cumulative sum
             cumsum = cumulative_sum(points, mean)
             
-            # Create plots
-            fig, axs = plt.subplots(2, 1, figsize=(10, 8))
+            # Create first plot: Points with mean and ±2SD lines
+            fig1 = go.Figure()
+
+            fig1.add_trace(go.Scatter(x=list(range(len(points))), y=points, mode='lines+markers', name='Points'))
+            fig1.add_trace(go.Scatter(x=[0, len(points)-1], y=[mean, mean], mode='lines', name='Mean', line=dict(color='red')))
+            fig1.add_trace(go.Scatter(x=[0, len(points)-1], y=[mean + 2*sd, mean + 2*sd], mode='lines', name='Mean + 2SD', line=dict(color='green', dash='dash')))
+            fig1.add_trace(go.Scatter(x=[0, len(points)-1], y=[mean - 2*sd, mean - 2*sd], mode='lines', name='Mean - 2SD', line=dict(color='green', dash='dash')))
             
-            # First plot: Points with mean and ±2SD lines
-            axs[0].plot(points, 'o-', label='Points')
-            axs[0].axhline(y=mean, color='r', linestyle='-', label='Mean')
-            axs[0].axhline(y=mean + 2*sd, color='g', linestyle='--', label='Mean + 2SD')
-            axs[0].axhline(y=mean - 2*sd, color='g', linestyle='--', label='Mean - 2SD')
-            axs[0].legend()
-            axs[0].set_title('Points with Mean and ±2SD')
-            
-            # Second plot: Cumulative sum
-            axs[1].plot(cumsum, 'o-', label='Cumulative Sum')
-            axs[1].legend()
-            axs[1].set_title('Cumulative Sum')
-            
-            st.pyplot(fig)
+            fig1.update_layout(title={'text': f'Points with Mean and ±2SD<br>Mean: {mean:.2f}, SD: {sd:.2f}', 'x': 0.5},
+                            xaxis_title='Index',
+                            yaxis_title='Value'
+                            )
+                            #    paper_bgcolor='white',
+                            #    plot_bgcolor='white',
+                            #    font=dict(color='black'))
+
+            # Create second plot: Cumulative sum
+            fig2 = go.Figure()
+
+            fig2.add_trace(go.Scatter(x=list(range(len(cumsum))), y=cumsum, mode='lines+markers', name='Cumulative Sum', line=dict(color='blue')))
+            fig2.add_trace(go.Scatter(x=[0, len(cumsum)-1], y=[mean, mean], mode='lines', name='Mean', line=dict(color='red')))
+
+            fig2.update_layout(title={'text': f'Cumulative Sum<br>Mean: {mean:.2f}', 'x': 0.5},
+                            xaxis_title='Index',
+                            yaxis_title='Value'
+                            )
+                            #    paper_bgcolor='white',
+                            #    plot_bgcolor='white',
+                            #    font=dict(color='black'))
+
+            st.plotly_chart(fig1)
+            st.plotly_chart(fig2)
         else:
             st.error("Please enter both sets of points.")
 
