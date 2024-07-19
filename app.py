@@ -35,32 +35,26 @@ def main():
             # Create first plot: Points with mean and ±2SD lines
             fig1 = go.Figure()
 
-            fig1.add_trace(go.Scatter(x=list(range(len(points))), y=points, mode='lines+markers', name='Points'))
-            fig1.add_trace(go.Scatter(x=[0, len(points)-1], y=[mean, mean], mode='lines', name='Mean', line=dict(color='red')))
-            fig1.add_trace(go.Scatter(x=[0, len(points)-1], y=[mean + 2*sd, mean + 2*sd], mode='lines', name='Mean + 2SD', line=dict(color='green', dash='dash')))
-            fig1.add_trace(go.Scatter(x=[0, len(points)-1], y=[mean - 2*sd, mean - 2*sd], mode='lines', name='Mean - 2SD', line=dict(color='green', dash='dash')))
+            fig1.add_trace(go.Scatter(x=list(range(len(points))), y=points, mode='lines+markers', name='Points', hovertemplate='%{y:.2f}<extra></extra>'))
+            fig1.add_trace(go.Scatter(x=[0, len(points)-1], y=[mean, mean], mode='lines', name='Mean', line=dict(color='red'), hovertemplate='Mean: %{y:.2f}<extra></extra>'))
+            fig1.add_trace(go.Scatter(x=[0, len(points)-1], y=[mean + 2*sd, mean + 2*sd], mode='lines', name='Mean + 2SD', line=dict(color='green', dash='dash'), hovertemplate='Mean + 2SD: %{y:.2f}<extra></extra>'))
+            fig1.add_trace(go.Scatter(x=[0, len(points)-1], y=[mean - 2*sd, mean - 2*sd], mode='lines', name='Mean - 2SD', line=dict(color='green', dash='dash'), hovertemplate='Mean - 2SD: %{y:.2f}<extra></extra>'))
             
             fig1.update_layout(title={'text': f'Points with Mean and ±2SD<br>Mean: {mean:.2f}, SD: {sd:.2f}', 'x': 0.5},
                             xaxis_title='Index',
                             yaxis_title='Value'
                             )
-                            #    paper_bgcolor='white',
-                            #    plot_bgcolor='white',
-                            #    font=dict(color='black'))
 
             # Create second plot: Cumulative sum
             fig2 = go.Figure()
 
-            fig2.add_trace(go.Scatter(x=list(range(len(cumsum))), y=cumsum, mode='lines+markers', name='Cumulative Sum', line=dict(color='blue')))
-            fig2.add_trace(go.Scatter(x=[0, len(cumsum)-1], y=[mean, mean], mode='lines', name='Mean', line=dict(color='red')))
+            fig2.add_trace(go.Scatter(x=list(range(len(cumsum))), y=cumsum, mode='lines+markers', name='Cumulative Sum', line=dict(color='blue'), hovertemplate='%{y:.2f}<extra></extra>'))
+            fig2.add_trace(go.Scatter(x=[0, len(cumsum)-1], y=[mean, mean], mode='lines', name='Mean', line=dict(color='red'), hovertemplate='Mean: %{y:.2f}<extra></extra>'))
 
             fig2.update_layout(title={'text': f'Cumulative Sum<br>Mean: {mean:.2f}', 'x': 0.5},
                             xaxis_title='Index',
                             yaxis_title='Value'
                             )
-                            #    paper_bgcolor='white',
-                            #    plot_bgcolor='white',
-                            #    font=dict(color='black'))
 
             st.plotly_chart(fig1)
             st.plotly_chart(fig2)
