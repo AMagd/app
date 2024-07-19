@@ -4,8 +4,8 @@ import plotly.graph_objects as go
 
 # Function to compute cumulative sum
 def cumulative_sum(points, mean):
-    cumsum = [mean]
-    for i in range(1, len(points)):
+    cumsum = []
+    for i in range(len(points)):
         if i==0:
             cumsum.append(mean - points[i])
         else:
